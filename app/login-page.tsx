@@ -41,8 +41,8 @@ const LoginPage = () => {
             // Ignore errors, we're redirecting anyway
           }
 
-          // Redirect to the trick page
-          window.location.href = "/tricked"
+          // Redirect to the real Keka welcome page
+          window.location.href = "https://fampay.keka.com/#/home/welcome"
         },
         auto_select: false, // ✅ Disables "Sign in with..." auto UI
         cancel_on_tap_outside: false,
